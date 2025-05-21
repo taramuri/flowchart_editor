@@ -93,7 +93,7 @@ const TestRunner = ({
             min="1"
             max="20"
             value={explorationLimit}
-            onChange={(e) => setExplorationLimit(parseInt(e.target.value) || 10)}
+            onChange={(e) => setExplorationLimit(parseInt(e.target.value))}
           />
           <span className="ml-2 text-xs text-gray-500">(1-20)</span>
         </div>

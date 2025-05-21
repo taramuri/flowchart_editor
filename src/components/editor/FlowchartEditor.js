@@ -37,6 +37,38 @@ const FlowchartEditor = ({
     return () => window.removeEventListener('resize', updateEditorRect);
   }, []);
 
+  // Вирішення проблеми з пасивними слухачами подій для wheel event
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleWheelEvent = (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      const newZoom = Math.min(Math.max(zoom * zoomFactor, 0.5), 2);
+      
+      // Розрахунок координат миші відносно редактора
+      const rect = editor.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left) / zoom - pan.x;
+      const mouseY = (e.clientY - rect.top) / zoom - pan.y;
+      
+      // Розрахунок нового пану, щоб зум був відносно положення миші
+      const newPanX = mouseX - (mouseX - pan.x) * (newZoom / zoom);
+      const newPanY = mouseY - (mouseY - pan.y) * (newZoom / zoom);
+      
+      setZoom(newZoom);
+      setPan({ x: newPanX, y: newPanY });
+    };
+
+    // Додаємо слухач подій з опцією { passive: false }
+    editor.addEventListener('wheel', handleWheelEvent, { passive: false });
+
+    // Видаляємо слухач при розмонтуванні компонента
+    return () => {
+      editor.removeEventListener('wheel', handleWheelEvent);
+    };
+  }, [zoom, pan]);
+
   const handleDeleteBlock = useCallback((blockId) => {
     onDeleteBlock(blockId);
     
@@ -194,22 +226,9 @@ const FlowchartEditor = ({
     }
   };
 
-  // Обробка коліщатка миші для зуму
+  // Оскільки ми використовуємо useEffect для wheel, ця функція більше не потрібна
   const handleWheel = (e) => {
-    e.preventDefault();
-    const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-    const newZoom = Math.min(Math.max(zoom * zoomFactor, 0.5), 2);
-    
-    // Розрахунок координат миші відносно редактора
-    const mouseX = (e.clientX - editorRect.left) / zoom - pan.x;
-    const mouseY = (e.clientY - editorRect.top) / zoom - pan.y;
-    
-    // Розрахунок нового пану, щоб зум був відносно положення миші
-    const newPanX = mouseX - (mouseX - pan.x) * (newZoom / zoom);
-    const newPanY = mouseY - (mouseY - pan.y) * (newZoom / zoom);
-    
-    setZoom(newZoom);
-    setPan({ x: newPanX, y: newPanY });
+    // Функцію обробки wheel перенесено в useEffect
   };
 
   const handleEditorClick = (e) => {
@@ -222,6 +241,22 @@ const FlowchartEditor = ({
     onSelectBlock(block);
   };
 
+  // Функція для збільшення зуму
+  const zoomIn = () => {
+    setZoom(Math.min(zoom + 0.1, 2));
+  };
+
+  // Функція для зменшення зуму
+  const zoomOut = () => {
+    setZoom(Math.max(zoom - 0.1, 0.5));
+  };
+
+  // Функція для скидання зуму та пану
+  const resetZoomPan = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
   return (
     <div
       ref={editorRef}
@@ -229,26 +264,25 @@ const FlowchartEditor = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseDown={handleMouseDown}
-      onWheel={handleWheel}
       onClick={handleEditorClick}
     >
       {/* Зум та пан контроль */}
       <div className="absolute bottom-4 right-4 bg-white rounded-md shadow-md p-2 flex space-x-2 z-10">
         <button 
           className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300"
-          onClick={() => setZoom(Math.min(zoom + 0.1, 2))}
+          onClick={zoomIn}
         >
           +
         </button>
         <button 
           className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300"
-          onClick={() => setZoom(Math.max(zoom - 0.1, 0.5))}
+          onClick={zoomOut}
         >
           -
         </button>
         <button 
           className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300"
-          onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+          onClick={resetZoomPan}
         >
           ↺
         </button>
