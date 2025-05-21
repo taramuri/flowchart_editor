@@ -1,5 +1,4 @@
 const CodeGenerator = {
-    // Генерація Python коду для багатопоточної програми
     generatePythonCode: (threads, variables) => {
       let code = `import threading\nimport time\nimport sys\n\n# Спільні змінні\n`;
       
@@ -199,7 +198,6 @@ const CodeGenerator = {
         code += `            break\n\n`;
       });
       
-      // Головна функція
       code += `def main():\n`;
       code += `    # Створення потоків\n`;
       threads.forEach(thread => {

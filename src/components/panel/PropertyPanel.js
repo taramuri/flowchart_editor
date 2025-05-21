@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 
-const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock, onSelectBlock }) => {
-  // Додаємо локальний стан для зберігання значення константи
+const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock }) => {
   const [constantValue, setConstantValue] = useState('0');
   
-  // Використовуємо useEffect для синхронізації значення
   useEffect(() => {
     if (selectedBlock && selectedBlock.type === 'assign' && !selectedBlock.properties?.isVariable) {
       const varName = selectedBlock.properties?.variable;
       if (varName) {
         const variable = variables.find(v => v.name === varName);
         if (variable) {
-          // Оновлюємо локальне значення
           setConstantValue(variable.value.toString());
           
-          // Також оновлюємо властивості блока, якщо значення змінилося
           if (selectedBlock.properties.value !== variable.value.toString()) {
             const updatedProperties = {
               ...selectedBlock.properties,
@@ -26,7 +22,6 @@ const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock,
         }
       }
     } else if (selectedBlock) {
-      // Оновлюємо локальний стан значенням з блоку
       setConstantValue(selectedBlock.properties?.value || '0');
     }
   }, [selectedBlock, variables, onUpdateBlock]);
@@ -39,39 +34,31 @@ const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock,
     );
   }
   
-  // Обробка зміни властивості
   const handlePropertyChange = (property, value) => {
     const updatedProperties = { ...selectedBlock.properties };
     updatedProperties[property] = value;
     onUpdateBlock(selectedBlock.id, updatedProperties);
     
-    // Якщо змінюється значення, оновлюємо також локальний стан
     if (property === 'value') {
       setConstantValue(value);
     }
   };
   
-  // Оновлений обробник для зміни змінної
   const handleVariableChange = (e) => {
     const varName = e.target.value;
     
-    // Знаходимо вибрану змінну
     const selectedVar = variables.find(v => v.name === varName);
     
-    // Створюємо нові властивості з оновленою змінною
     const updatedProperties = { 
       ...selectedBlock.properties,
       variable: varName 
     };
     
-    // Якщо це блок присвоєння і тип значення - константа, 
-    // встановлюємо значення змінної як значення за замовчуванням
     if (selectedVar && selectedBlock.type === 'assign' && !selectedBlock.properties?.isVariable) {
       updatedProperties.value = selectedVar.value.toString();
       setConstantValue(selectedVar.value.toString());
     }
     
-    // Оновлюємо блок з усіма змінами одночасно
     onUpdateBlock(selectedBlock.id, updatedProperties);
   };
   
@@ -100,7 +87,6 @@ const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock,
       isVariable: true
     };
     
-    // Вибираємо першу доступну змінну як значення
     if (variables.length > 0) {
       updatedProperties.value = variables[0].name;
     }
@@ -108,10 +94,8 @@ const PropertyPanel = ({ selectedBlock, variables, onUpdateBlock, onRemoveBlock,
     onUpdateBlock(selectedBlock.id, updatedProperties);
   };
   
-  // Оновлений обробник зміни числового значення
   const handleNumericValueChange = (e) => {
     const value = e.target.value;
-    // Дозволяємо порожній рядок (буде замінено на '0') або валідне число
     if (value === '' || (!isNaN(value) && parseInt(value) >= 0 && parseInt(value) <= 2147483647)) {
       const finalValue = value === '' ? '0' : value;
       handlePropertyChange('value', finalValue);

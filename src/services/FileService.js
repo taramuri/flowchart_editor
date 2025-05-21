@@ -1,4 +1,3 @@
-// Збереження у файл
 export const saveToFile = (data, filename) => {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -10,14 +9,12 @@ export const saveToFile = (data, filename) => {
     document.body.appendChild(a);
     a.click();
     
-    // Прибираємо за собою
     setTimeout(() => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 0);
   };
   
-  // Завантаження з файлу
   export const loadFromFile = (event, callback) => {
     const file = event.target.files[0];
     if (!file) return;

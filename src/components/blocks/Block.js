@@ -1,4 +1,3 @@
-// components/Block.js
 import React from 'react';
 
 const Block = ({ 
@@ -8,13 +7,11 @@ const Block = ({
   onSelect,
   onStartConnection
 }) => {
-  // Обробка кліку на блок
   const handleClick = (e) => {
     e.stopPropagation();
     onSelect(block);
   };
   
-  // Визначення стилів блоку в залежності від типу
   let blockStyle = {
     position: 'absolute',
     left: `${block.x}px`,
@@ -25,7 +22,6 @@ const Block = ({
   let blockContent;
   let connectionPoints = [];
   
-  // Створення відповідної форми блоку в залежності від типу
   switch (block.type) {
     case 'start':
       blockContent = (
@@ -39,7 +35,6 @@ const Block = ({
         </div>
       );
       
-      // Точка з'єднання для початкового блоку (тільки вихід)
       connectionPoints.push(
         <div 
           key="out"
@@ -65,7 +60,6 @@ const Block = ({
         </div>
       );
       
-      // Точка з'єднання для кінцевого блоку (тільки вхід)
       connectionPoints.push(
         <div 
           key="in"
@@ -89,7 +83,6 @@ const Block = ({
         </div>
       );
       
-      // Точки з'єднання для умови (вхід зверху, true вправо, false вліво, додатковий вихід знизу)
       connectionPoints.push(
         <div 
           key="in"
@@ -144,7 +137,6 @@ const Block = ({
         </div>
       );
       
-      // Точки з'єднання для присвоєння (вхід зверху, вихід знизу)
       connectionPoints.push(
         <div 
           key="in"
@@ -177,7 +169,6 @@ const Block = ({
         </div>
       );
       
-      // Точки з'єднання для блоку вводу (вхід зверху, вихід знизу)
       connectionPoints.push(
         <div 
           key="in"

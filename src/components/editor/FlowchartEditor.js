@@ -24,7 +24,6 @@ const FlowchartEditor = ({
   const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
   const [selectedConnection, setSelectedConnection] = useState(null);
 
-  // Оновлення розмірів редактора при зміні розміру вікна
   useEffect(() => {
     const updateEditorRect = () => {
       if (editorRef.current) {
@@ -51,18 +50,15 @@ const FlowchartEditor = ({
     setSelectedConnection(null);
   }, [thread, onUpdateConnections]);
 
-  // Тепер використовуємо ці функції в useEffect
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        // Зняття виділення
         onSelectBlock(null);
         setSelectedConnection(null);
         setConnecting(false);
         setConnectionStart(null);
         setTempConnection(null);
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
-        // Видалення вибраного блоку або зв'язку
         if (selectedBlock) {          
           handleDeleteBlock(selectedBlock.id);
         } else if (selectedConnection) {
@@ -79,14 +75,11 @@ const FlowchartEditor = ({
 
   const handleDragStart = (e, block) => {
     e.preventDefault();
-    // Запобігаємо виділенню блоку при перетягуванні
-    if (e.button !== 0) return; // Тільки ліва кнопка миші
+    if (e.button !== 0) return; 
   
-    // Отримуємо координати миші з урахуванням зуму та пану
     const mouseX = (e.clientX - editorRect.left) / zoom;
     const mouseY = (e.clientY - editorRect.top) / zoom;
   
-    // Розраховуємо відступ відносно позиції блоку
     const offsetX = mouseX - (block.x + pan.x);
     const offsetY = mouseY - (block.y + pan.y);
   
@@ -94,18 +87,14 @@ const FlowchartEditor = ({
     setDragOffset({ x: offsetX, y: offsetY });
   };
   
-  // Обробка перетягування блоку
   const handleMouseMove = (e) => {
     if (draggingBlock) {
-      // Розрахунок нової позиції з урахуванням зуму і пану
       const mouseX = (e.clientX - editorRect.left) / zoom;
       const mouseY = (e.clientY - editorRect.top) / zoom;
   
-      // Оновлюємо позицію блоку з урахуванням зміщення
       const newX = mouseX - dragOffset.x - pan.x;
       const newY = mouseY - dragOffset.y - pan.y;
   
-      // Оновлюємо позицію блоку
       const updatedBlocks = thread.blocks.map(b => {
         if (b.id === draggingBlock.id) {
           return { ...b, x: newX, y: newY };
@@ -115,7 +104,6 @@ const FlowchartEditor = ({
   
       onUpdateBlocks(updatedBlocks);
     } else if (connecting && connectionStart) {
-      // Розрахунок координат для тимчасового з'єднання
       const mouseX = (e.clientX - editorRect.left) / zoom - pan.x;
       const mouseY = (e.clientY - editorRect.top) / zoom - pan.y;
   
@@ -126,7 +114,6 @@ const FlowchartEditor = ({
         endY: mouseY,
       });
     } else if (isMiddleMouseDown) {
-      // Розрахунок зміни пану
       const dx = (e.clientX - lastMousePos.x) / zoom;
       const dy = (e.clientY - lastMousePos.y) / zoom;
   
@@ -139,7 +126,6 @@ const FlowchartEditor = ({
     }
   };
 
-  // Завершення перетягування
   const handleMouseUp = (e) => {
     if (draggingBlock) {
       setDraggingBlock(null);
@@ -226,15 +212,12 @@ const FlowchartEditor = ({
     setPan({ x: newPanX, y: newPanY });
   };
 
-  // Клік на редактор
   const handleEditorClick = (e) => {
-    // Знімаємо виділення при кліку на фон
     if (e.target === editorRef.current) {
       onSelectBlock(null);
     }
   };
 
-  // Вибір блоку
   const handleSelectBlock = (block) => {
     onSelectBlock(block);
   };

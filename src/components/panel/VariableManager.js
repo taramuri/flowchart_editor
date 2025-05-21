@@ -6,9 +6,7 @@ const VariableManager = ({ variables, onAddVariable, onRemoveVariable, onUpdateV
   const [editingVariable, setEditingVariable] = useState(null);
   const [editedValue, setEditedValue] = useState('');
   
-  // Обробка додавання нової змінної
   const handleAddVariable = () => {
-    // Перевірка на валідність імені змінної
     if (newVarName && /^[a-zA-Z][a-zA-Z0-9_]*$/.test(newVarName)) {
       if (onAddVariable(newVarName)) {
         setNewVarName('');
@@ -16,17 +14,15 @@ const VariableManager = ({ variables, onAddVariable, onRemoveVariable, onUpdateV
         alert('Змінна з таким іменем вже існує');
       }
     } else {
-      alert('Ім\'я змінної має починатися з літери і може містити тільки літери, цифри та символ підкреслення');
+      alert('Ім\'я змінної має починатися з літери і може містити тільки латинські літери, цифри та символ підкреслення');
     }
   };
 
-  // Початок редагування значення змінної
   const startEditing = (variable) => {
     setEditingVariable(variable.name);
     setEditedValue(variable.value.toString());
   };
 
-  // Збереження відредагованого значення
   const saveEditedValue = () => {
     const value = parseInt(editedValue, 10);
     if (!isNaN(value) && value >= 0 && value <= 2147483647) {

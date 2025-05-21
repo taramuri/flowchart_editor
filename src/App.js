@@ -31,18 +31,15 @@
       { id: 'condition', name: 'Умова', color: 'bg-yellow-200', type: 'control' },
     ];
 
-    // Додати новий потік
     const addThread = () => {
       const newThreadId = threads.length + 1;
       setThreads([...threads, { id: newThreadId, name: `Потік ${newThreadId}`, blocks: [], connections: [] }]);
     };
 
-    // Змінити назву потоку
     const updateThreadName = (threadId, newName) => {
       setThreads(threads.map(t => t.id === threadId ? { ...t, name: newName } : t));
     };
 
-    // Видалити потік
     const removeThread = (threadId) => {
       if (threads.length > 1) {
         setThreads(threads.filter(t => t.id !== threadId));
@@ -52,42 +49,34 @@
       }
     };
 
-    // Додати або оновити блок
     const updateBlocks = (threadId, updatedBlocks) => {
       setThreads(threads.map(t => t.id === threadId ? { ...t, blocks: updatedBlocks } : t));
     };
 
     const updateBlockAndRefresh = (blockId, properties) => {
-      // Знаходимо і оновлюємо блок в активному потоці
       const threadIndex = threads.findIndex(t => t.id === activeThread);
       if (threadIndex === -1) return;
       
       const newThreads = [...threads];
       const thread = newThreads[threadIndex];
       
-      // Оновлюємо блок
       const updatedBlocks = thread.blocks.map(b => 
         b.id === blockId ? { ...b, properties } : b
       );
       thread.blocks = updatedBlocks;
       
-      // Оновлюємо стан з повністю новим об'єктом threads
       setThreads(newThreads);
       
-      // Повторно вибираємо блок для забезпечення оновлення PropertyPanel
       const updatedBlock = updatedBlocks.find(b => b.id === blockId);
       
-      // Принудове перемальовування, спочатку знімаємо виділення
       setSelectedBlock(null);
       
-      // Потім через таймаут знову вибираємо блок
       setTimeout(() => {
         setSelectedBlock(updatedBlock);
       }, 10);
     };
     
     const updateBlockPropertiesAndVariables = (blockId, properties) => {
-      // Отримуємо поточний блок
       const thread = threads.find(t => t.id === activeThread);
       if (!thread) return;
       
@@ -116,7 +105,6 @@
       }
     };
 
-    // Додати або оновити з'єднання
     const updateConnections = (threadId, updatedConnections) => {
       setThreads(threads.map(t => t.id === threadId ? { ...t, connections: updatedConnections } : t));
     };

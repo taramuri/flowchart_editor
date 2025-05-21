@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Connection = ({ id, startX, startY, endX, endY, type, isSelected, onSelect }) => {
-  // Визначення кольору з'єднання в залежності від типу
   let strokeColor;
   switch (type) {
     case 'true':

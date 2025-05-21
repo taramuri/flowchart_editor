@@ -12,13 +12,11 @@ const ThreadsList = ({
   const [editingThread, setEditingThread] = useState(null);
   const [editedName, setEditedName] = useState('');
   
-  // Початок редагування назви потоку
   const startEditing = (thread) => {
     setEditingThread(thread.id);
     setEditedName(thread.name);
   };
   
-  // Завершення редагування назви потоку
   const saveThreadName = () => {
     if (editedName.trim()) {
       onUpdateThreadName(editingThread, editedName);
@@ -26,7 +24,6 @@ const ThreadsList = ({
     setEditingThread(null);
   };
   
-  // Скасування редагування назви потоку
   const cancelEditing = () => {
     setEditingThread(null);
   };

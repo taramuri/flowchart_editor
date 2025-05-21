@@ -4,7 +4,6 @@ const BlockPalette = ({ blockTypes, onSelectBlockType }) => {
   return (
     <div className="grid grid-cols-3 gap-2">
       {blockTypes.map((blockType) => {
-        // Визначаємо вигляд блоку в палітрі в залежності від типу
         let blockElement;
         
         switch (blockType.id) {
